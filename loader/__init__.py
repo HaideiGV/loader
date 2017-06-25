@@ -1,18 +1,34 @@
-from pyramid.config import Configurator
-from pymongo import MongoClient
 from urllib.parse import urlparse
+from crontab import CronTab
+
+import schedule
+from cornice import resource
+from pymongo import MongoClient
+from pyramid.config import Configurator
 from pyramid.renderers import JSON
+
+from loader.api.v1.files import File
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # cron = CronTab()
+
     config = Configurator(settings=settings)
     config.include('pyramid_jinja2')
     config.add_renderer('img_json', JSON(indent=4))
     config.add_static_view('static', 'static', cache_max_age=3600)
 
     db_url = urlparse("mongodb://test:test@localhost:27017/loaddb")
+
+    # def job():
+    #     print("I'm working...")
+    #     db = MongoClient(host=db_url.hostname, port=db_url.port)
+    #
+    # schedule.every(1).minutes.do(job)
+    # schedule.run_all(1)
+
     config.registry.db = MongoClient(
         host=db_url.hostname,
         port=db_url.port,
@@ -25,10 +41,13 @@ def main(global_config, **settings):
         return db
 
     config.add_route('index', '/')
-    config.add_route('get', '/file/{uuid}/get')
-    config.add_route('post', '/file/create')
-    config.add_route('delete', '/file/{uuid}/delete')
-    config.add_route('put', '/file/{uuid}/update')
     config.add_request_method(add_db, 'db', reify=True)
-    config.scan()
+
+    user_resource = resource.add_resource(
+        File, collection_path='/api/v1/files', path='/api/v1/files/{uuid}'
+    )
+
+    config.include("cornice")
+    config.add_cornice_resource(user_resource)
+    config.scan('loader')
     return config.make_wsgi_app()

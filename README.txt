@@ -19,7 +19,7 @@ GET:
 
     Request:
 
-        - curl -i -X GET http://localhost:6565/file/<file_key>
+        - curl -i -X GET http://localhost:6565/api/v1/files/<file_key>
 
     Response:
 
@@ -32,7 +32,7 @@ POST:
     Request:
 
         - curl -i -X POST -H "Content-Type: multipart/form-data" -F "data=<file_path>"
-        http://localhost:6565/file/create
+        http://localhost:6565/api/v1/files
 
     Response:
 
@@ -53,7 +53,7 @@ DELETE:
 
     Request:
 
-        - curl -i -X DELETE http://localhost:6565/file/<file_key>/delete
+        - curl -i -X DELETE http://localhost:6565/api/v1/files/<file_key>
 
     Response:
 
@@ -66,7 +66,7 @@ PUT:
     Request:
 
         - curl -i -X PUT -H "Content-Type: multipart/form-data" -F "data=<file_path>"
-        http://localhost:6565/file/<file_key>/update
+        http://localhost:6565/api/v1/files/<file_key>
 
     Response:
 
