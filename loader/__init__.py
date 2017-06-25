@@ -25,10 +25,10 @@ def main(global_config, **settings):
         return db
 
     config.add_route('index', '/')
-    config.add_route('get', '/get/{uuid}')
-    config.add_route('post', '/post')
-    config.add_route('delete', '/delete/{uuid}')
-    config.add_route('update', '/update/{uuid}')
+    config.add_route('get', '/file/{uuid}/get')
+    config.add_route('post', '/file/create')
+    config.add_route('delete', '/file/{uuid}/delete')
+    config.add_route('put', '/file/{uuid}/update')
     config.add_request_method(add_db, 'db', reify=True)
     config.scan()
     return config.make_wsgi_app()

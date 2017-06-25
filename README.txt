@@ -12,17 +12,18 @@ Getting Started
 
 
 
-
-
-
-
-
 API EXAMPLES
 =================
 
 GET:
 
-- curl -i -X GET http://localhost:6565/get/<file_key>
+    Request:
+
+        - curl -i -X GET http://localhost:6565/file/<file_key>
+
+    Response:
+
+        File data.
 
 
 POST:
@@ -30,7 +31,8 @@ POST:
 
     Request:
 
-        - curl -i -X POST -H "Content-Type: multipart/form-data" -F "data=<file_path>" http://localhost:6565/post
+        - curl -i -X POST -H "Content-Type: multipart/form-data" -F "data=<file_path>"
+        http://localhost:6565/file/create
 
     Response:
 
@@ -45,3 +47,27 @@ POST:
         {
             "file_key": "a2149e38bdf947d4ada09ab1f98706c6"
         }%
+
+
+DELETE:
+
+    Request:
+
+        - curl -i -X DELETE http://localhost:6565/file/<file_key>/delete
+
+    Response:
+
+        DELETED!
+
+
+PUT:
+
+
+    Request:
+
+        - curl -i -X PUT -H "Content-Type: multipart/form-data" -F "data=<file_path>"
+        http://localhost:6565/file/<file_key>/update
+
+    Response:
+
+        - UPDATED!

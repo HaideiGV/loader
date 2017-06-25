@@ -74,10 +74,10 @@ def delete(request):
     return Response("DELETED!")
 
 
-@view_config(route_name='update', renderer='img_json')
+@view_config(route_name='put')
 def update(request):
-
-    images = request.db['images'].find({"client_key": request.matchdict['uuid']})
+    client_uuid = request.matchdict['uuid']
+    images = request.db['images'].find({"client_key": client_uuid})
 
     fs = GridFSBucket(request.db)
 
@@ -85,9 +85,21 @@ def update(request):
     for image in images:
         file_key = image['file_key']
 
-    if not file_key:
-        return Response("FILE NOT FOUND!")
+    file_data = request.body
+
+    if not file_data:
+        return Response("FILE DATA MUST BE SPECIFIED!")
 
     fs.delete(file_key)
 
-    return Response("DELETED!")
+    file_id = fs.upload_from_stream(str(file_key), file_data)
+
+    request.db['images'].insert(
+        {
+            'client_key': client_uuid,
+            'file_key': file_id,
+            'description': request.POST.get('description')
+        }
+    )
+
+    return Response("UPDATED!")
