@@ -1,7 +1,5 @@
 from urllib.parse import urlparse
-from crontab import CronTab
 
-import schedule
 from cornice import resource
 from pymongo import MongoClient
 from pyramid.config import Configurator
@@ -13,21 +11,12 @@ from loader.api.v1.files import File
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    # cron = CronTab()
-
     config = Configurator(settings=settings)
     config.include('pyramid_jinja2')
     config.add_renderer('img_json', JSON(indent=4))
     config.add_static_view('static', 'static', cache_max_age=3600)
 
     db_url = urlparse("mongodb://test:test@localhost:27017/loaddb")
-
-    # def job():
-    #     print("I'm working...")
-    #     db = MongoClient(host=db_url.hostname, port=db_url.port)
-    #
-    # schedule.every(1).minutes.do(job)
-    # schedule.run_all(1)
 
     config.registry.db = MongoClient(
         host=db_url.hostname,
